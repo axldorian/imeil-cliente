@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { RichTextEditor, Link } from '@mantine/tiptap';
-import { Modal, Input, Container, Dialog } from '@mantine/core';
+import { Input, Container, Dialog } from '@mantine/core';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextStyle from '@tiptap/extension-text-style';
