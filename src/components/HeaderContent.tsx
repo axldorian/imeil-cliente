@@ -20,7 +20,7 @@ const HeaderContent = ({ isDark, toggleColorFunc }: HeaderContentProps) => {
 			})}
 		>
 			<Group sx={{ height: '100%' }} px={20} position="apart">
-				<Title order={3}>EMAil</Title>
+				<Title order={3}>IMEil</Title>
 				<TextInput
 					placeholder="Buscar..."
 					icon={<IconSearch size={14} />}

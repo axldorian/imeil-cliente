@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { RichTextEditor, Link } from '@mantine/tiptap';
-import { Input, Container, Dialog } from '@mantine/core';
+import { Input, Button, Text, Container, Dialog } from '@mantine/core';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextStyle from '@tiptap/extension-text-style';
@@ -54,11 +54,29 @@ const EmailModal = ({ isDark, opened, setOpened }: EmailModalProps) => {
 		'#fd7e14',
 	];
 
+	const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const data = new FormData(e.currentTarget);
+		const to = data.get('to') as string;
+		const subject = data.get('subject') as string;
+		const body = editor?.getHTML();
+
+		if (body == '<p></p>') {
+			return;
+		}
+
+		console.log('Sending email to', to);
+		console.log('Subject', subject);
+		console.log('Body', body);
+
+		setOpened(false);
+		editor?.commands.clearContent();
+	};
+
 	return (
 		<Dialog
 			opened={opened}
 			onClose={() => {
-				console.log(editor?.getHTML());
 				setOpened(false);
 				editor?.commands.clearContent();
 			}}
@@ -68,112 +86,132 @@ const EmailModal = ({ isDark, opened, setOpened }: EmailModalProps) => {
 			size="100%"
 			withCloseButton
 		>
-			<Container sx={{ marginTop: '2em', marginBottom: '2em' }}>
-				<Input
-					placeholder="Para"
-					variant="unstyled"
-					sx={(theme) => ({
-						marginBottom: '1rem',
-						borderBottom: isDark
-							? `1px solid ${theme.colors.dark[4]}`
-							: `1px solid ${theme.colors.gray[4]}`,
-					})}
-				/>
-				<Input
-					placeholder="Asunto"
-					variant="unstyled"
-					sx={(theme) => ({
-						borderBottom: isDark
-							? `1px solid ${theme.colors.dark[4]}`
-							: `1px solid ${theme.colors.gray[4]}`,
-					})}
-				/>
-			</Container>
-			<RichTextEditor
-				editor={editor}
-				labels={{
-					colorPickerCancel: 'Cancelar',
-					colorPickerClear: 'Limpiar color',
-					colorPickerPalette: 'Paleta',
-					colorPickerSave: 'Guardar',
-					colorPickerColorPicker: 'Selector de color',
-					colorPickerControlLabel: 'Color',
-					colorPickerColorLabel: (color: string) => `Color ${color}`,
-					boldControlLabel: 'Negrita',
-					italicControlLabel: 'Cursiva',
-					underlineControlLabel: 'Subrayado',
-					strikeControlLabel: 'Tachado',
-					clearFormattingControlLabel: 'Limpiar formato',
-					highlightControlLabel: 'Resaltar',
-					codeControlLabel: 'Código',
-					h1ControlLabel: 'Título 1',
-					h2ControlLabel: 'Título 2',
-					h3ControlLabel: 'Título 3',
-					h4ControlLabel: 'Título 4',
-					h5ControlLabel: 'Título 5',
-					h6ControlLabel: 'Título 6',
-					blockquoteControlLabel: 'Cita',
-					hrControlLabel: 'Línea horizontal',
-					bulletListControlLabel: 'Lista',
-					orderedListControlLabel: 'Lista ordenada',
-					subscriptControlLabel: 'Subíndice',
-					superscriptControlLabel: 'Superíndice',
-					linkControlLabel: 'Enlace',
-					unlinkControlLabel: 'Eliminar enlace',
-					alignLeftControlLabel: 'Alinear texto a la izquierda',
-					alignCenterControlLabel: 'Alinear texto al centro',
-					alignJustifyControlLabel: 'Justificar texto',
-					alignRightControlLabel: 'Alinear texto a la derecha',
-				}}
-			>
-				<RichTextEditor.Toolbar stickyOffset={60}>
-					<RichTextEditor.ColorPicker colors={defaultColors} />
-					<RichTextEditor.ControlsGroup>
-						<RichTextEditor.Bold />
-						<RichTextEditor.Italic />
-						<RichTextEditor.Underline />
-						<RichTextEditor.Strikethrough />
-						<RichTextEditor.Highlight />
-						<RichTextEditor.Code />
-					</RichTextEditor.ControlsGroup>
+			<form onSubmit={handleSend}>
+				<Container sx={{ marginTop: '2em', marginBottom: '2em' }}>
+					<Input
+						name="to"
+						placeholder="Para"
+						variant="unstyled"
+						sx={(theme) => ({
+							marginBottom: '1rem',
+							borderBottom: isDark
+								? `1px solid ${theme.colors.dark[4]}`
+								: `1px solid ${theme.colors.gray[4]}`,
+						})}
+						required
+					/>
+					<Input
+						name="subject"
+						placeholder="Asunto"
+						variant="unstyled"
+						sx={(theme) => ({
+							borderBottom: isDark
+								? `1px solid ${theme.colors.dark[4]}`
+								: `1px solid ${theme.colors.gray[4]}`,
+						})}
+						required
+					/>
+				</Container>
+				<RichTextEditor
+					editor={editor}
+					labels={{
+						colorPickerCancel: 'Cancelar',
+						colorPickerClear: 'Limpiar color',
+						colorPickerPalette: 'Paleta',
+						colorPickerSave: 'Guardar',
+						colorPickerColorPicker: 'Selector de color',
+						colorPickerControlLabel: 'Color',
+						colorPickerColorLabel: (color: string) => `Color ${color}`,
+						boldControlLabel: 'Negrita',
+						italicControlLabel: 'Cursiva',
+						underlineControlLabel: 'Subrayado',
+						strikeControlLabel: 'Tachado',
+						clearFormattingControlLabel: 'Limpiar formato',
+						highlightControlLabel: 'Resaltar',
+						codeControlLabel: 'Código',
+						h1ControlLabel: 'Título 1',
+						h2ControlLabel: 'Título 2',
+						h3ControlLabel: 'Título 3',
+						h4ControlLabel: 'Título 4',
+						h5ControlLabel: 'Título 5',
+						h6ControlLabel: 'Título 6',
+						blockquoteControlLabel: 'Cita',
+						hrControlLabel: 'Línea horizontal',
+						bulletListControlLabel: 'Lista',
+						orderedListControlLabel: 'Lista ordenada',
+						subscriptControlLabel: 'Subíndice',
+						superscriptControlLabel: 'Superíndice',
+						linkControlLabel: 'Enlace',
+						unlinkControlLabel: 'Eliminar enlace',
+						alignLeftControlLabel: 'Alinear texto a la izquierda',
+						alignCenterControlLabel: 'Alinear texto al centro',
+						alignJustifyControlLabel: 'Justificar texto',
+						alignRightControlLabel: 'Alinear texto a la derecha',
+					}}
+				>
+					<RichTextEditor.Toolbar stickyOffset={60}>
+						<RichTextEditor.ColorPicker colors={defaultColors} />
+						<RichTextEditor.ControlsGroup>
+							<RichTextEditor.Bold />
+							<RichTextEditor.Italic />
+							<RichTextEditor.Underline />
+							<RichTextEditor.Strikethrough />
+							<RichTextEditor.Highlight />
+							<RichTextEditor.Code />
+						</RichTextEditor.ControlsGroup>
 
-					<RichTextEditor.ControlsGroup>
-						<RichTextEditor.H1 />
-						<RichTextEditor.H2 />
-						<RichTextEditor.H3 />
-						<RichTextEditor.H4 />
-						<RichTextEditor.H5 />
-						<RichTextEditor.H6 />
-					</RichTextEditor.ControlsGroup>
+						<RichTextEditor.ControlsGroup>
+							<RichTextEditor.H1 />
+							<RichTextEditor.H2 />
+							<RichTextEditor.H3 />
+							<RichTextEditor.H4 />
+							<RichTextEditor.H5 />
+							<RichTextEditor.H6 />
+						</RichTextEditor.ControlsGroup>
 
-					<RichTextEditor.ControlsGroup>
-						<RichTextEditor.ClearFormatting />
-					</RichTextEditor.ControlsGroup>
+						<RichTextEditor.ControlsGroup>
+							<RichTextEditor.ClearFormatting />
+						</RichTextEditor.ControlsGroup>
 
-					<RichTextEditor.ControlsGroup>
-						<RichTextEditor.Blockquote />
-						<RichTextEditor.Hr />
-						<RichTextEditor.BulletList />
-						<RichTextEditor.OrderedList />
-						<RichTextEditor.Subscript />
-						<RichTextEditor.Superscript />
-					</RichTextEditor.ControlsGroup>
+						<RichTextEditor.ControlsGroup>
+							<RichTextEditor.Blockquote />
+							<RichTextEditor.Hr />
+							<RichTextEditor.BulletList />
+							<RichTextEditor.OrderedList />
+							<RichTextEditor.Subscript />
+							<RichTextEditor.Superscript />
+						</RichTextEditor.ControlsGroup>
 
-					<RichTextEditor.ControlsGroup>
-						<RichTextEditor.Link />
-						<RichTextEditor.Unlink />
-					</RichTextEditor.ControlsGroup>
+						<RichTextEditor.ControlsGroup>
+							<RichTextEditor.Link />
+							<RichTextEditor.Unlink />
+						</RichTextEditor.ControlsGroup>
 
-					<RichTextEditor.ControlsGroup>
-						<RichTextEditor.AlignLeft />
-						<RichTextEditor.AlignCenter />
-						<RichTextEditor.AlignJustify />
-						<RichTextEditor.AlignRight />
-					</RichTextEditor.ControlsGroup>
-				</RichTextEditor.Toolbar>
+						<RichTextEditor.ControlsGroup>
+							<RichTextEditor.AlignLeft />
+							<RichTextEditor.AlignCenter />
+							<RichTextEditor.AlignJustify />
+							<RichTextEditor.AlignRight />
+						</RichTextEditor.ControlsGroup>
+					</RichTextEditor.Toolbar>
 
-				<RichTextEditor.Content />
-			</RichTextEditor>
+					<RichTextEditor.Content />
+				</RichTextEditor>
+				<div style={{ marginTop: '1em', overflow: 'hidden' }}>
+					<Button
+						size="sm"
+						variant="gradient"
+						type="submit"
+						sx={(theme) => ({
+							float: 'right',
+							alignSelf: 'center',
+							borderRadius: theme.radius.lg,
+						})}
+					>
+						<Text size="sm">Enviar</Text>
+					</Button>
+				</div>
+			</form>
 		</Dialog>
 	);
 };

@@ -1,10 +1,12 @@
+import { Link } from 'react-router-dom';
 import { Dispatch, SetStateAction } from 'react';
-import { ThemeIcon, UnstyledButton, Group, Text, Navbar } from '@mantine/core';
+import { ThemeIcon, Button, UnstyledButton, Group, Text, Navbar } from '@mantine/core';
 import { IconInbox, IconMailForward, IconSend } from '@tabler/icons';
+import { Rutas } from '../routes';
 
 const contents = [
-	{ icon: <IconInbox size={16} />, color: 'red', label: 'Recibidos' },
-	{ icon: <IconMailForward size={16} />, color: 'green', label: 'Enviados' },
+	{ icon: <IconInbox size={16} />, color: 'red', label: 'Recibidos', link: Rutas.inbox },
+	{ icon: <IconMailForward size={16} />, color: 'green', label: 'Enviados', link: Rutas.send },
 ];
 
 interface NavbarContentProps {
@@ -23,37 +25,26 @@ const NavbarContent = ({ isDark, openModalFunc }: NavbarContentProps) => {
 				backgroundColor: isDark ? theme.colors.dark[9] : theme.colors.gray[0],
 			})}
 		>
-			<UnstyledButton
+			<Button
+				size="lg"
+				variant="gradient"
 				onClick={() => openModalFunc(true)}
+				leftIcon={<IconSend size={20} />}
 				sx={(theme) => ({
-					width: '100%',
+					alignSelf: 'center',
 					marginBottom: theme.spacing.md,
-					padding: theme.spacing.md,
 					borderRadius: theme.radius.lg,
-					color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
-
-					backgroundColor:
-						theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
-
-					'&:hover': {
-						backgroundColor:
-							theme.colorScheme === 'dark'
-								? theme.colors.dark[6]
-								: theme.colors.gray[1],
-					},
+					width: '80%',
 				})}
 			>
-				<Group>
-					<ThemeIcon color="blue" variant="light">
-						{<IconSend size={16} />}
-					</ThemeIcon>
-					<Text size="sm">Enviar correo</Text>
-				</Group>
-			</UnstyledButton>
+				<Text size="sm">Enviar correo</Text>
+			</Button>
 			{contents.map((content, i) => {
 				return (
 					<UnstyledButton
 						key={i}
+						component={Link}
+						to={content.link}
 						sx={(theme) => ({
 							width: '100%',
 							padding: theme.spacing.xs,
