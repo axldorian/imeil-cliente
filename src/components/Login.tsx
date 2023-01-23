@@ -16,9 +16,13 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../services';
 import { Rutas } from '../routes';
 
+import { useSessionStore } from '../stores/useSessionStore';
+
 const Login = () => {
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const isDark = colorScheme === 'dark';
+
+	const setSession = useSessionStore((state) => state.setSession);
 
 	const navigate = useNavigate();
 
@@ -37,6 +41,7 @@ const Login = () => {
 
 		login(values)
 			.then((response) => {
+				setSession(values.correo);
 				navigate('/' + Rutas.inbox);
 			})
 			.catch((error) => {

@@ -2,8 +2,11 @@ import { useLocalStorage } from '@mantine/hooks';
 import { NotificationsProvider } from '@mantine/notifications';
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import { Rutas } from './routes';
+
+import { useSessionStore } from './stores/useSessionStore';
 
 // Page components
 import Login from './components/Login';
@@ -13,6 +16,8 @@ import ViewMessage from './components/ViewMessage';
 import NotFound from './components/NotFound';
 
 const App = () => {
+	const session = useSessionStore((state) => state.session);
+
 	const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
 		key: 'color-scheme',
 		defaultValue: 'dark',
@@ -32,14 +37,16 @@ const App = () => {
 							<Route path={Rutas.login} element={<Login />} />
 
 							{/* Rutas app */}
-							<Route path={'/'} element={<Layout />}>
-								{/* inbox */}
-								<Route path={Rutas.inbox} element={<Inbox />} />
-								<Route path={Rutas.inbox + '/:id'} element={<ViewMessage />} />
+							<Route element={<ProtectedRoute isAuth={session !== ''} />}>
+								<Route path={'/'} element={<Layout />}>
+									{/* inbox */}
+									<Route path={Rutas.inbox} element={<Inbox />} />
+									<Route path={Rutas.inbox + '/:id'} element={<ViewMessage />} />
 
-								{/* send */}
-								<Route path={Rutas.send} element={<Send />} />
-								<Route path={Rutas.send + '/:id'} element={<ViewMessage />} />
+									{/* send */}
+									<Route path={Rutas.send} element={<Send />} />
+									<Route path={Rutas.send + '/:id'} element={<ViewMessage />} />
+								</Route>
 							</Route>
 
 							{/* Not found */}

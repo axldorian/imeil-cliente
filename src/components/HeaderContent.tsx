@@ -1,15 +1,15 @@
 import { ColorScheme, Group, ActionIcon, Title, Header } from '@mantine/core';
 import { IconSun, IconMoonStars, IconLogout } from '@tabler/icons';
 
+import { useSessionStore } from '../stores/useSessionStore';
+
 interface HeaderContentProps {
 	isDark: boolean;
 	toggleColorFunc: (colorScheme?: ColorScheme) => void;
 }
 
 const HeaderContent = ({ isDark, toggleColorFunc }: HeaderContentProps) => {
-	const handleLogout = () => {
-		console.log('Logout');
-	};
+	const deleteSession = useSessionStore((state) => state.deleteSession);
 
 	return (
 		<Header
@@ -35,7 +35,7 @@ const HeaderContent = ({ isDark, toggleColorFunc }: HeaderContentProps) => {
 					<ActionIcon
 						variant="light"
 						color="gray"
-						onClick={() => handleLogout()}
+						onClick={() => deleteSession()}
 						title="Cerrar sesión"
 					>
 						<IconLogout size={18} />
