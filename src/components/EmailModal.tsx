@@ -1,6 +1,8 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import { Input, Button, Text, Container, Dialog } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
+import { IconCheck, IconX } from '@tabler/icons';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextStyle from '@tiptap/extension-text-style';
@@ -10,6 +12,8 @@ import Subscript from '@tiptap/extension-subscript';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import { Color } from '@tiptap/extension-color';
+import { enviarCorreo } from '../services';
+import { Correo } from '../types';
 
 interface EmailModalProps {
 	isDark: boolean;
@@ -59,18 +63,41 @@ const EmailModal = ({ isDark, opened, setOpened }: EmailModalProps) => {
 		const data = new FormData(e.currentTarget);
 		const to = data.get('to') as string;
 		const subject = data.get('subject') as string;
-		const body = editor?.getHTML();
+		const body = editor?.getHTML() as string;
 
 		if (body == '<p></p>') {
 			return;
 		}
 
-		console.log('Sending email to', to);
-		console.log('Subject', subject);
-		console.log('Body', body);
+		const mail: Correo = {
+			remitente: 'axl@imeil.com',
+			destinatarios: to.split(','),
+			asunto: subject,
+			mensaje: body,
+		};
 
-		setOpened(false);
-		editor?.commands.clearContent();
+		// TODO: refresh listado de correos enviados
+		enviarCorreo(mail)
+			.then((res) => {
+				setOpened(false);
+				editor?.commands.clearContent();
+				showNotification({
+					title: 'Correo enviado',
+					message: 'El correo ha sido enviado correctamente',
+					color: 'teal',
+					icon: <IconCheck size={16} />,
+					autoClose: 3000,
+				});
+			})
+			.catch((err) => {
+				showNotification({
+					title: 'Error',
+					message: 'Ha ocurrido un error al enviar el correo',
+					color: 'red',
+					icon: <IconX size={16} />,
+					autoClose: 3000,
+				});
+			});
 	};
 
 	return (

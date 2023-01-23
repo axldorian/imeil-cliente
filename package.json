@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
-    "@mantine/core": "^5.9.5",
-    "@mantine/form": "^5.9.5",
-    "@mantine/hooks": "^5.9.5",
-    "@mantine/tiptap": "^5.9.5",
+    "@mantine/core": "5.10.1",
+    "@mantine/hooks": "5.10.1",
+    "@mantine/notifications": "^5.10.1",
+    "@mantine/tiptap": "5.10.1",
     "@tabler/icons": "^1.118.0",
     "@tiptap/extension-color": "^2.0.0-beta.209",
     "@tiptap/extension-highlight": "^2.0.0-beta.209",
@@ -25,6 +25,7 @@
     "@tiptap/extension-underline": "^2.0.0-beta.209",
     "@tiptap/react": "^2.0.0-beta.209",
     "@tiptap/starter-kit": "^2.0.0-beta.209",
+    "ky": "^0.33.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.6.1"

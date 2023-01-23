@@ -1,5 +1,5 @@
-import { ColorScheme, Group, ActionIcon, TextInput, Title, Header } from '@mantine/core';
-import { IconSun, IconMoonStars, IconLogout, IconSearch } from '@tabler/icons';
+import { ColorScheme, Group, ActionIcon, Title, Header } from '@mantine/core';
+import { IconSun, IconMoonStars, IconLogout } from '@tabler/icons';
 
 interface HeaderContentProps {
 	isDark: boolean;
@@ -20,12 +20,9 @@ const HeaderContent = ({ isDark, toggleColorFunc }: HeaderContentProps) => {
 			})}
 		>
 			<Group sx={{ height: '100%' }} px={20} position="apart">
-				<Title order={3}>IMEil</Title>
-				<TextInput
-					placeholder="Buscar..."
-					icon={<IconSearch size={14} />}
-					sx={{ width: '30%' }}
-				/>
+				<Title order={3} sx={{ marginLeft: '76px' }}>
+					IMEil
+				</Title>
 				<Group>
 					<ActionIcon
 						variant="light"

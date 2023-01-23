@@ -1,56 +1,52 @@
-import { lazy, Suspense, useState } from 'react';
-import { MantineProvider, ColorSchemeProvider, ColorScheme, LoadingOverlay } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
+import { NotificationsProvider } from '@mantine/notifications';
+import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import { Rutas } from './routes';
 
-// Lazy load components
-const Inbox = lazy(() => import('./components/Inbox'));
-const Send = lazy(() => import('./components/Send'));
+// Page components
+import Login from './components/Login';
+import Inbox from './components/Inbox';
+import Send from './components/Send';
+import ViewMessage from './components/ViewMessage';
+import NotFound from './components/NotFound';
 
 const App = () => {
-	const [colorScheme, setColorScheme] = useState<ColorScheme>('dark');
+	const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+		key: 'color-scheme',
+		defaultValue: 'dark',
+	});
 	const toggleColorScheme = () => setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
 
 	return (
 		<ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
 			<MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
-				<BrowserRouter>
-					<Routes>
-						{/* Ruta raíz */}
-						<Route index element={<Navigate to={Rutas.inbox} />} />
+				<NotificationsProvider>
+					<BrowserRouter>
+						<Routes>
+							{/* Ruta raíz */}
+							<Route index element={<Navigate to={Rutas.inbox} />} />
 
-						{/* Rutas app */}
-						<Route path={'/'} element={<Layout />}>
-							<Route
-								path={Rutas.inbox}
-								element={
-									<Suspense fallback={<LoadingOverlay visible />}>
-										<Inbox />
-									</Suspense>
-								}
-							/>
-							<Route
-								path={Rutas.send}
-								element={
-									<Suspense fallback={<LoadingOverlay visible />}>
-										<Send />
-									</Suspense>
-								}
-							/>
-						</Route>
+							{/* Ruta login */}
+							<Route path={Rutas.login} element={<Login />} />
 
-						{/* Not found */}
-						<Route
-							path="*"
-							element={
-								<main style={{ padding: '1rem' }}>
-									<p>No hay nada aquí!</p>
-								</main>
-							}
-						/>
-					</Routes>
-				</BrowserRouter>
+							{/* Rutas app */}
+							<Route path={'/'} element={<Layout />}>
+								{/* inbox */}
+								<Route path={Rutas.inbox} element={<Inbox />} />
+								<Route path={Rutas.inbox + '/:id'} element={<ViewMessage />} />
+
+								{/* send */}
+								<Route path={Rutas.send} element={<Send />} />
+								<Route path={Rutas.send + '/:id'} element={<ViewMessage />} />
+							</Route>
+
+							{/* Not found */}
+							<Route path="*" element={<NotFound />} />
+						</Routes>
+					</BrowserRouter>
+				</NotificationsProvider>
 			</MantineProvider>
 		</ColorSchemeProvider>
 	);

@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { ThemeIcon, Button, UnstyledButton, Group, Text, Navbar, Divider } from '@mantine/core';
+import { Link, useLocation } from 'react-router-dom';
 import { Dispatch, SetStateAction } from 'react';
-import { ThemeIcon, Button, UnstyledButton, Group, Text, Navbar } from '@mantine/core';
 import { IconInbox, IconMailForward, IconSend } from '@tabler/icons';
 import { Rutas } from '../routes';
 
@@ -15,6 +15,8 @@ interface NavbarContentProps {
 }
 
 const NavbarContent = ({ isDark, openModalFunc }: NavbarContentProps) => {
+	const { pathname } = useLocation();
+
 	return (
 		<Navbar
 			width={{ base: 250 }}
@@ -39,6 +41,7 @@ const NavbarContent = ({ isDark, openModalFunc }: NavbarContentProps) => {
 			>
 				<Text size="sm">Enviar correo</Text>
 			</Button>
+			<Divider sx={{ margin: '0em 1.5em 1em 1.5em' }} />
 			{contents.map((content, i) => {
 				return (
 					<UnstyledButton
@@ -46,21 +49,28 @@ const NavbarContent = ({ isDark, openModalFunc }: NavbarContentProps) => {
 						component={Link}
 						to={content.link}
 						sx={(theme) => ({
-							width: '100%',
+							alignSelf: 'center',
+							width: '80%',
 							padding: theme.spacing.xs,
 							borderRadius: theme.radius.sm,
 							color:
 								theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
+							backgroundColor: pathname.includes(content.link)
+								? theme.colorScheme === 'dark'
+									? theme.colors.dark[7]
+									: theme.colors.gray[1]
+								: 'none',
+
 							'&:hover': {
 								backgroundColor:
 									theme.colorScheme === 'dark'
 										? theme.colors.dark[6]
-										: theme.colors.gray[1],
+										: theme.colors.gray[2],
 							},
 						})}
 					>
-						<Group>
+						<Group sx={{ marginLeft: '1.5em' }}>
 							<ThemeIcon color={content.color} variant="light">
 								{content.icon}
 							</ThemeIcon>
