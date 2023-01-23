@@ -21,6 +21,8 @@ import { SendMail } from '../types';
 import EliminarCorreo from './EliminarCorreo';
 import { formatDate } from '../utils';
 
+import { useReloadSendStore } from '../stores/useReloadSendStore';
+
 const useStyles = createStyles((theme) => ({
 	header: {
 		position: 'sticky',
@@ -66,7 +68,9 @@ const Send = () => {
 	const maxItems = 20;
 	const [activePage, setPage] = useState(1);
 
-	const [refresh, setRefresh] = useState(false);
+	const reload = useReloadSendStore((state) => state.reloadSend);
+	const setReload = useReloadSendStore((state) => state.setReloadSend);
+
 	const [loading, setLoading] = useState(true);
 
 	const getData = () => {
@@ -83,11 +87,11 @@ const Send = () => {
 
 	useEffect(getData, []);
 	useEffect(() => {
-		if (!refresh) return;
+		if (!reload) return;
 
-		setRefresh(false);
+		setReload(false);
 		getData();
-	}, [refresh]);
+	}, [reload]);
 
 	const [openEliminar, setOpenEliminar] = useState(false);
 	const [idEliminar, setIdEliminar] = useState('');
@@ -238,7 +242,7 @@ const Send = () => {
 					<EliminarCorreo
 						open={openEliminar}
 						SetOpen={setOpenEliminar}
-						SetRefresh={setRefresh}
+						SetRefresh={setReload}
 						idCorreo={idEliminar}
 					/>
 				</Stack>

@@ -15,6 +15,8 @@ import { Color } from '@tiptap/extension-color';
 import { enviarCorreo } from '../services';
 import { Correo } from '../types';
 
+import { useReloadSendStore } from '../stores/useReloadSendStore';
+
 interface EmailModalProps {
 	isDark: boolean;
 	opened: boolean;
@@ -22,6 +24,8 @@ interface EmailModalProps {
 }
 
 const EmailModal = ({ isDark, opened, setOpened }: EmailModalProps) => {
+	const setReloadSend = useReloadSendStore((state) => state.setReloadSend);
+
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
@@ -71,16 +75,16 @@ const EmailModal = ({ isDark, opened, setOpened }: EmailModalProps) => {
 
 		const mail: Correo = {
 			remitente: 'axl@imeil.com',
-			destinatarios: to.split(','),
+			destinatarios: to.split(',').map((email) => email.trim()),
 			asunto: subject,
 			mensaje: body,
 		};
 
-		// TODO: refresh listado de correos enviados
 		enviarCorreo(mail)
 			.then((res) => {
 				setOpened(false);
 				editor?.commands.clearContent();
+				setReloadSend(true);
 				showNotification({
 					title: 'Correo enviado',
 					message: 'El correo ha sido enviado correctamente',
