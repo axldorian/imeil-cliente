@@ -5,8 +5,6 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import { Rutas } from './routes';
-import io from 'socket.io-client'
-import { useEffect } from 'react';
 
 import { useSessionStore } from './stores/useSessionStore';
 
@@ -17,8 +15,6 @@ import Send from './components/Send';
 import ViewMessage from './components/ViewMessage';
 import NotFound from './components/NotFound';
 
-const socket = io('http://localhost:3000')
-
 const App = () => {
 	const session = useSessionStore((state) => state.session);
 
@@ -27,12 +23,6 @@ const App = () => {
 		defaultValue: 'dark',
 	});
 	const toggleColorScheme = () => setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
-
-	useEffect(() => {
-		socket.on('nuevo', mensaje => {
-			console.log(mensaje)
-		})
-	}, [])
 
 	return (
 		<ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>

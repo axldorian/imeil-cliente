@@ -21,6 +21,8 @@ import { InboxMail } from '../types';
 import EliminarCorreo from './EliminarCorreo';
 import { formatDate } from '../utils';
 
+import { useReloadInboxStore } from '../stores/useReloadInboxStore';
+
 const useStyles = createStyles((theme) => ({
 	header: {
 		position: 'sticky',
@@ -66,7 +68,8 @@ const Inbox = () => {
 	const maxItems = 20;
 	const [activePage, setPage] = useState(1);
 
-	const [refresh, setRefresh] = useState(false);
+	const reload = useReloadInboxStore((state) => state.reloadInbox);
+	const setReload = useReloadInboxStore((state) => state.setReloadInbox);
 	const [loading, setLoading] = useState(true);
 
 	const getData = () => {
@@ -83,11 +86,11 @@ const Inbox = () => {
 
 	useEffect(getData, []);
 	useEffect(() => {
-		if (!refresh) return;
+		if (!reload) return;
 
-		setRefresh(false);
+		setReload(false);
 		getData();
-	}, [refresh]);
+	}, [reload]);
 
 	const [openEliminar, setOpenEliminar] = useState(false);
 	const [idEliminar, setIdEliminar] = useState('');
@@ -225,7 +228,7 @@ const Inbox = () => {
 					<EliminarCorreo
 						open={openEliminar}
 						SetOpen={setOpenEliminar}
-						SetRefresh={setRefresh}
+						SetRefresh={setReload}
 						idCorreo={idEliminar}
 					/>
 				</Stack>
