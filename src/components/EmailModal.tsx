@@ -16,6 +16,7 @@ import { enviarCorreo } from '../services';
 import { Correo } from '../types';
 
 import { useReloadSendStore } from '../stores/useReloadSendStore';
+import { useSessionStore } from '../stores/useSessionStore';
 
 interface EmailModalProps {
 	isDark: boolean;
@@ -24,6 +25,7 @@ interface EmailModalProps {
 }
 
 const EmailModal = ({ isDark, opened, setOpened }: EmailModalProps) => {
+	const usermail = useSessionStore((state) => state.session);
 	const setReloadSend = useReloadSendStore((state) => state.setReloadSend);
 
 	const editor = useEditor({
@@ -74,7 +76,7 @@ const EmailModal = ({ isDark, opened, setOpened }: EmailModalProps) => {
 		}
 
 		const mail: Correo = {
-			remitente: 'axl@imeil.com',
+			remitente: usermail,
 			destinatarios: to.split(',').map((email) => email.trim()),
 			asunto: subject,
 			mensaje: body,
